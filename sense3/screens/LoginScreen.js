@@ -16,17 +16,20 @@ const LoginScreen = ({ navigation }) => {
   const handleLogin = async (values, actions) => {
     const { username, password } = values;
     const result = await loginUser(username, password);
+
     if (result.user) {
-      console.log('Login successful:', result.user);
-      // Example: Navigate to your app's main screen upon successful login
-      navigation.navigate('MainScreen'); // Make sure 'MainScreen' is defined in your navigation stack
-    } else if (result.error) {
-      console.error('Login error:', result.error);
-      // Display an error message on the form. Adjust according to your UI needs.
-      actions.setFieldError('general', result.error || 'Invalid username or password');
+        // User found and password confirmed
+        console.log('Login successful:', result.user);
+        // Perform navigation or state updates as needed
+    } else {
+        // Login failed, display error message from result.error
+        console.error('Login error:', result.error);
+        actions.setFieldError('general', result.error);
     }
-    actions.setSubmitting(false); // Reset form submission state
-  };
+
+    actions.setSubmitting(false);
+};
+
 
   return (
     <View style={styles.container}>

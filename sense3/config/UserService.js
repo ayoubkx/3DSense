@@ -1,16 +1,16 @@
 // UserService.js
 import API from './api';
 
-export const createUser = async (userId, userData) => {
+export const createUser = async (username, userData) => {
     try {
-      const response = await API.put(`/users/${userId}.json`, JSON.stringify(userData));
+      // username is unique and can be used as a key
+      const response = await API.put(`/users/${username}.json`, JSON.stringify(userData));
       return { user: response.data };
     } catch (error) {
       console.error('Error creating user:', error);
       return { error: error.response ? error.response.data : 'An error occurred' };
     }
 };
-  
 
 export const getUser = async (userId) => {
   try {
@@ -25,29 +25,26 @@ export const getUser = async (userId) => {
 };
 export const loginUser = async (username, password) => {
     try {
-      // Attempt to fetch user data by username
-      const response = await API.get(`/users.json?orderBy="username"&equalTo="${username}"`);
-      const users = response.data;
+        // Fetch user data by username (key)
+        const response = await API.get(`/users/${username}.json`);
+        const userData = response.data;
   
-      // Check if users were returned
-      if (!users || Object.keys(users).length === 0) {
-        return { error: 'User not found' };
-      }
+        // Check if user data was returned
+        if (!userData) {
+            return { error: 'User not found' };
+        }
   
-      // Extract user data. 
-      const userId = Object.keys(users)[0];
-      const userData = users[userId];
-  
-      // Check if the passwords match
-      if (userData.password === password) {
-        // Passwords match. Log the user in.
-        return { user: userData };
-      } else {
-        // Passwords do not match.
-        return { error: 'Invalid password' };
-      }
+        // Check if the passwords match
+        if (userData.password === password) {
+            // Passwords match. Log the user in.
+            return { user: userData };
+        } else {
+            // Passwords do not match.
+            return { error: 'Invalid password' };
+        }
     } catch (error) {
-      // Handle potential errors
-      return { error: error.message };
+        // Handle potential errors
+        return { error: error.message };
     }
-  };
+};
+

@@ -18,22 +18,22 @@ const CreateAccountScreen = ({ navigation }) => {
   const handleSignUp = async (values, actions) => {
     const { username, email, password } = values;
     
-    // Call the createUser function and pass the necessary data
-    const result = await createUser(username, email, password);
+    
+    const userData = { email, password };
+
+    const result = await createUser(username, userData);
     
     if (result.user) {
       console.log('User created successfully:', result.user);
-      // Optionally navigate to the login screen or main app screen
-      // navigation.navigate('LoginScreen');
+      // Navigate to the Login Screen
+      navigation.navigate('LoginScreen');
     } else if (result.error) {
       console.error('Error creating user:', result.error);
-      // Show an error message to the user
       actions.setFieldError('general', result.error);
     }
   
-    // Reset form or perform additional actions after submission
     actions.setSubmitting(false);
-  };
+};
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
