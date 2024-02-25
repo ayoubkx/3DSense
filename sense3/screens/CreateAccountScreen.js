@@ -4,6 +4,8 @@ import { Button, TextInput, Text } from 'react-native-paper';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
+import { createUser } from '../config/UserService';
+
 // Updated Validation Schema
 const AccountSchema = Yup.object().shape({
   username: Yup.string().required('Username is required'),
@@ -15,8 +17,22 @@ const AccountSchema = Yup.object().shape({
 const CreateAccountScreen = ({ navigation }) => {
   const handleSignUp = async (values, actions) => {
     const { username, email, password } = values;
-    console.log(`SignUp with: Username: ${username}, Email: ${email}, Password: ${password}`);
-    // Integrate Firebase or your auth solution here
+    
+    // Call the createUser function and pass the necessary data
+    const result = await createUser(username, email, password);
+    
+    if (result.user) {
+      console.log('User created successfully:', result.user);
+      // Optionally navigate to the login screen or main app screen
+      // navigation.navigate('LoginScreen');
+    } else if (result.error) {
+      console.error('Error creating user:', result.error);
+      // Show an error message to the user
+      actions.setFieldError('general', result.error);
+    }
+  
+    // Reset form or perform additional actions after submission
+    actions.setSubmitting(false);
   };
 
   return (

@@ -4,6 +4,8 @@ import { Button, TextInput, Text } from 'react-native-paper';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
+import { loginUser } from '../config/UserService'; 
+
 // Validation schema using Yup
 const LoginSchema = Yup.object().shape({
   username: Yup.string().required('Username is required'),
@@ -11,10 +13,19 @@ const LoginSchema = Yup.object().shape({
 });
 
 const LoginScreen = ({ navigation }) => {
-  const handleLogin = (values) => {
+  const handleLogin = async (values, actions) => {
     const { username, password } = values;
-    console.log('Login attempt with:', username, password);
-    // Here you'll call Firebase or your auth provider
+    const result = await loginUser(username, password);
+    if (result.user) {
+      console.log('Login successful:', result.user);
+      // Example: Navigate to your app's main screen upon successful login
+      navigation.navigate('MainScreen'); // Make sure 'MainScreen' is defined in your navigation stack
+    } else if (result.error) {
+      console.error('Login error:', result.error);
+      // Display an error message on the form. Adjust according to your UI needs.
+      actions.setFieldError('general', result.error || 'Invalid username or password');
+    }
+    actions.setSubmitting(false); // Reset form submission state
   };
 
   return (
@@ -24,7 +35,7 @@ const LoginScreen = ({ navigation }) => {
         validationSchema={LoginSchema}
         onSubmit={handleLogin}
       >
-        {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+        {({ handleChange, handleBlur, handleSubmit, values, errors, touched, isValid, isSubmitting }) => (
           <View>
             <TextInput
               label="Username"
@@ -47,7 +58,9 @@ const LoginScreen = ({ navigation }) => {
             />
             <Text style={styles.errorText}>{touched.password && errors.password}</Text>
 
-            <Button onPress={handleSubmit} mode="contained" style={styles.button}>
+            {errors.general && <Text style={styles.errorText}>{errors.general}</Text>}
+
+            <Button onPress={handleSubmit} mode="contained" style={styles.button} disabled={!isValid || isSubmitting}>
               Log In
             </Button>
           </View>
