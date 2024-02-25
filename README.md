@@ -10,7 +10,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 To run this project, you need to install the following software:
 
-- Node.js: Download and install it from the [Node.js website](https://nodejs.org/).
+- To install Node.js and npm, go to the [Node.js website](https://nodejs.org/) and download the installer for your operating system. Running the installer will install both Node.js and npm.
 - Expo CLI: Install it globally using npm with the following command:
 ```
 npm install -g expo-cli
