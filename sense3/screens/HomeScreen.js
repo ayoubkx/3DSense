@@ -17,7 +17,7 @@ const HomeScreen = ({ navigation }) => {
         onPress={() => navigation.navigate('CreateAccountScreen')}
         style={styles.button}
       >
-        Create Account
+        Sign Up
       </Button>
     </View>
   );
