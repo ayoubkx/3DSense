@@ -8,39 +8,56 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-What things you need to install the software and how to install them:
+To run this project, you need to install the following software:
 
-- Node.js (Download and install from [Node.js website](https://nodejs.org/))
-- Expo CLI
-  sh'''
-  npm install -g expo-cli
-  '''sh
+- Node.js: Download and install it from the [Node.js website](https://nodejs.org/).
+- Expo CLI: Install it globally using npm with the following command:
+
+npm install -g expo-cli
   
 
-Navigate to the project directory:
 
-  cd 3DSense/sense3
+### Installation
 
-install dependencies:
+Follow these steps to set up the project on your local machine:
 
-  npm install
+1. **Clone the Repository**
 
-Running the app:
-- Start the development server:
-  
-  npm start
+2. **Navigate to the Project Directory**
 
--Running the app on a simulator/emulator:
-Android:
-
-npm run android
-
-iOS(Mac only):
-
-npm run ios
-
-# Running the app on a physical device:
-
-Download the Expo Go app from the App Store or Google Play Store. Scan the QR code in your terminal to open your project.
+cd 3DSense/sense3
 
 
+3. **Install Dependencies**
+
+npm install
+
+### Running the App
+
+To run the app, use the following commands:
+
+- **Start the Development Server**
+
+npm start
+
+- **Run the App on a Simulator/Emulator**
+
+- **For Android:**
+
+  ```
+  npm run android
+  ```
+
+- **For iOS (Mac only):**
+
+  ```
+  npm run ios
+  ```
+
+### Running the App on a Physical Device
+
+To run the app on a physical device:
+
+1. Download the Expo Go app from the [App Store](https://apps.apple.com/app/expo-go/id982107779) or [Google Play Store](https://play.google.com/store/apps/details?id=host.exp.exponent&referrer=www).
+2. Open the Expo Go app on your device.
+3. Scan the QR code provided in your terminal after running `npm start`.
