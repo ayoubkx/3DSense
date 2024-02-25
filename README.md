@@ -12,8 +12,9 @@ What things you need to install the software and how to install them:
 
 - Node.js (Download and install from [Node.js website](https://nodejs.org/))
 - Expo CLI
-  
+  sh'''
   npm install -g expo-cli
+  '''sh
   
 
 Navigate to the project directory:
