@@ -16,15 +16,15 @@ What things you need to install the software and how to install them:
   npm install -g expo-cli
   
 
-# Navigate to the project directory:
+Navigate to the project directory:
 
   cd 3DSense/sense3
 
-# install dependencies:
+install dependencies:
 
   npm install
 
-# Running the app:
+Running the app:
 - Start the development server:
   
   npm start
