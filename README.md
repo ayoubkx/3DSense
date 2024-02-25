@@ -12,8 +12,9 @@ To run this project, you need to install the following software:
 
 - Node.js: Download and install it from the [Node.js website](https://nodejs.org/).
 - Expo CLI: Install it globally using npm with the following command:
-
+```
 npm install -g expo-cli
+```
   
 
 
@@ -24,22 +25,23 @@ Follow these steps to set up the project on your local machine:
 1. **Clone the Repository**
 
 2. **Navigate to the Project Directory**
-
+```
 cd 3DSense/sense3
+```
 
 
 3. **Install Dependencies**
-
+```
 npm install
-
+```
 ### Running the App
 
 To run the app, use the following commands:
 
 - **Start the Development Server**
-
+```
 npm start
-
+```
 - **Run the App on a Simulator/Emulator**
 
 - **For Android:**
