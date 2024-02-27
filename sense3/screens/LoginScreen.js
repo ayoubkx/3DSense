@@ -21,6 +21,7 @@ const LoginScreen = ({ navigation }) => {
         // User found and password confirmed
         console.log('Login successful:', result.user);
         // Perform navigation or state updates as needed
+        navigation.navigate('Profile');
     } else {
         // Login failed, display error message from result.error
         console.error('Login error:', result.error);
