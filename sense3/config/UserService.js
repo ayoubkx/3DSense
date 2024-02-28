@@ -1,20 +1,35 @@
-// UserService.js
+
 import API from './api';
 
 export const createUser = async (username, userData) => {
-    try {
-      // username is unique and can be used as a key
+  try {
+      // First, check if the username already exists
+      const existingUserResponse = await API.get(`/users/${username}.json`);
+      const existingUserData = existingUserResponse.data;
+
+      // If the username exists, return an error
+      if (existingUserData) {
+          return { error: 'Username is already taken' };
+      }
+
+      // If the username doesn't exist, create the new user
       const response = await API.put(`/users/${username}.json`, JSON.stringify(userData));
-      return { user: response.data };
-    } catch (error) {
+      if (response.data) {
+          return { user: response.data };
+      } else {
+          // Handle the case where the user wasn't properly created
+          return { error: 'User could not be created' };
+      }
+  } catch (error) {
       console.error('Error creating user:', error);
-      return { error: error.response ? error.response.data : 'An error occurred' };
-    }
+      return { error: error.message || 'An error occurred' };
+  }
 };
 
-export const getUser = async (userId) => {
+
+export const getUser = async (username) => {
   try {
-    const response = await API.get(`/users/${userId}.json`);
+    const response = await API.get(`/users/${username}.json`);
     console.log('User data:', response.data);
     // Handle success
     return response.data; // or handle as needed

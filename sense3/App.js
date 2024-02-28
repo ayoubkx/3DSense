@@ -8,6 +8,7 @@ import ProfileScreen from './screens/ProfileScreen';
 import AddPrinterScreen  from './screens/AddPrinterScreen';
 import RemovePrintersScreen from  "./screens/RemovePrintersScreen";
 import ViewClusterScreen from  "./screens/ViewClusterScreen";
+import PrinterDetailScreen from './screens/PrinterDetailScreen';
 
 
 const Stack = createStackNavigator();
@@ -23,6 +24,7 @@ function App() {
         <Stack.Screen name="AddPrinterScreen" component={AddPrinterScreen} options={{ title: 'Add printer' }}/>
         <Stack.Screen name="RemovePrintersScreen" component={RemovePrintersScreen} options={{ title: 'Remove Printer' }}/>
         <Stack.Screen name="ViewClusterScreen" component={ViewClusterScreen} options={{ title: 'View Cluster' }}/>
+        <Stack.Screen name="PrinterDetailScreen" component={PrinterDetailScreen} options={{ title: 'Status' }}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

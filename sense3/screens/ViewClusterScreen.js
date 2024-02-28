@@ -17,25 +17,30 @@ const printers = [
 
   
 
-const ViewClusterScreen = () => {
-  const renderItem = ({ item }) => (
-    <View style={[
-      styles.printerSquare,
-      { backgroundColor: item.status === 'running' ? 'green' : 'red' },
-    ]}>
-      <Text style={styles.printerText}>{item.name}</Text>
-    </View>
-  );
-
-  return (
-    <FlatList
-      data={printers}
-      renderItem={renderItem}
-      keyExtractor={item => item.id}
-      numColumns={3}
-    />
-  );
-};
+  const ViewClusterScreen = ({ navigation }) => {
+    const renderItem = ({ item }) => (
+      <View style={[
+        styles.printerSquare,
+        { backgroundColor: item.status === 'running' ? 'green' : 'red' },
+      ]}>
+        <Text
+          style={styles.printerText}
+          onPress={() => navigation.navigate('PrinterDetailScreen', { printer: item })}
+        >
+          {item.name}
+        </Text>
+      </View>
+    );
+  
+    return (
+      <FlatList
+        data={printers}
+        renderItem={renderItem}
+        keyExtractor={item => item.id}
+        numColumns={3}
+      />
+    );
+  };
 
 const styles = StyleSheet.create({
   printerSquare: {
