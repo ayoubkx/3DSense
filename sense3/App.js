@@ -16,11 +16,22 @@ const Stack = createStackNavigator();
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="HomeScreen">
+      <Stack.Navigator
+        initialRouteName="HomeScreen"
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: '#240046', // Set your desired color
+          },
+          headerTintColor: '#fff', // Sets the color of the header title and buttons
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      >
         <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ title: 'Welcome' }} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ title: 'Log In' }} />
         <Stack.Screen name="CreateAccountScreen" component={CreateAccountScreen} options={{ title: 'Create Account' }} />
-        <Stack.Screen name="Profile" component={ProfileScreen} options={{ title: 'profile' }}/>
+        <Stack.Screen name="Profile" component={ProfileScreen} options={{ title: 'Profile' }}/>
         <Stack.Screen name="AddPrinterScreen" component={AddPrinterScreen} options={{ title: 'Add printer' }}/>
         <Stack.Screen name="RemovePrintersScreen" component={RemovePrintersScreen} options={{ title: 'Remove Printer' }}/>
         <Stack.Screen name="ViewClusterScreen" component={ViewClusterScreen} options={{ title: 'View Cluster' }}/>

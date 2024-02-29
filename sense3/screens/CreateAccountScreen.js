@@ -18,14 +18,11 @@ const CreateAccountScreen = ({ navigation }) => {
   const handleSignUp = async (values, actions) => {
     const { username, email, password } = values;
     
-    
     const userData = { email, password };
-
     const result = await createUser(username, userData);
     
     if (result.user) {
       console.log('User created successfully:', result.user);
-      // Navigate to the Login Screen
       navigation.navigate('LoginScreen');
     } else if (result.error) {
       console.error('Error creating user:', result.error);
@@ -33,7 +30,7 @@ const CreateAccountScreen = ({ navigation }) => {
     }
   
     actions.setSubmitting(false);
-};
+  };
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
@@ -46,39 +43,44 @@ const CreateAccountScreen = ({ navigation }) => {
           <View style={styles.formContainer}>
             <TextInput
               label="Username"
-              mode="outlined"
+              mode="contained"
               onChangeText={handleChange('username')}
               onBlur={handleBlur('username')}
               value={values.username}
+              style={styles.input}
               error={touched.username && errors.username}
+
             />
             {touched.username && errors.username && <Text style={styles.errorText}>{errors.username}</Text>}
             <TextInput
               label="Email"
-              mode="outlined"
+              mode="contained"
               onChangeText={handleChange('email')}
               onBlur={handleBlur('email')}
               value={values.email}
+              style={styles.input}
               error={touched.email && errors.email}
             />
             {touched.email && errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
             <TextInput
               label="Password"
-              mode="outlined"
+              mode="contained"
               secureTextEntry
               onChangeText={handleChange('password')}
               onBlur={handleBlur('password')}
               value={values.password}
+              style={styles.input}
               error={touched.password && errors.password}
             />
             {touched.password && errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
             <TextInput
               label="Confirm Password"
-              mode="outlined"
+              mode="contained"
               secureTextEntry
               onChangeText={handleChange('confirmPassword')}
               onBlur={handleBlur('confirmPassword')}
               value={values.confirmPassword}
+              style={styles.input}
               error={touched.confirmPassword && errors.confirmPassword}
             />
             {touched.confirmPassword && errors.confirmPassword && <Text style={styles.errorText}>{errors.confirmPassword}</Text>}
@@ -97,18 +99,23 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 20,
+    backgroundColor: '#240046',  // Dark background color from the theme
   },
   formContainer: {
     marginTop: 15,
   },
+  input: {
+    marginBottom: 20,  
+  
+  },
   button: {
     marginTop: 20,
+    backgroundColor: '#6411ad',  // Theme color for the button
   },
   errorText: {
     fontSize: 14,
-    color: 'red',
-    fontWeight: 'bold',
-    marginTop: 5,
+    color: 'red',  
+    marginBottom: 10,
   },
 });
 

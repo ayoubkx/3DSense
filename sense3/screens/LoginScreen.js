@@ -46,7 +46,7 @@ const LoginScreen = ({ navigation }) => {
               onChangeText={handleChange('username')}
               onBlur={handleBlur('username')}
               value={values.username}
-              mode="outlined"
+              mode="contained"
               error={touched.username && errors.username}
             />
             <Text style={styles.errorText}>{touched.username && errors.username}</Text>
@@ -57,7 +57,7 @@ const LoginScreen = ({ navigation }) => {
               onBlur={handleBlur('password')}
               value={values.password}
               secureTextEntry
-              mode="outlined"
+              mode="contained"
               error={touched.password && errors.password}
             />
             <Text style={styles.errorText}>{touched.password && errors.password}</Text>
@@ -79,13 +79,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 20,
+    backgroundColor: '#240046',  // Applying the dark background color
   },
   button: {
     marginTop: 20,
+    backgroundColor: '#6411ad',  // Using one of your theme colors for the button
   },
   errorText: {
     fontSize: 14,
-    color: 'red',
+    color: 'red',  // You might want to adjust this if you have a specific color for errors in your theme
     marginBottom: 10,
   },
 });
