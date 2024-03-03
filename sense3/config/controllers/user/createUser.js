@@ -1,5 +1,4 @@
-const API = require('../../api.js');
-
+import API from '../../api.js';
 async function createUser(req, userData) {
   try {
     const username = req.body.username;
@@ -29,4 +28,4 @@ async function createUser(req, userData) {
   }
 }
 
-module.exports = { createUser };
+export { createUser };

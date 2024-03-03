@@ -1,4 +1,7 @@
-const { createUser } = require('../../controllers/user/createUser');
+// Adjust the import statement to import the named export createUser
+import { createUser } from '../../controllers/user/createUser.js';
 
 // CREATE A USER
-module.exports = (app) => app.post('/api/signup', createUser);
+export default function setupSignupRoute(app) {
+  app.post('/api/signup', createUser);
+}
