@@ -57,9 +57,12 @@ const RemovePrinterScreen = () => {
     <View style={styles.container}>
       <Searchbar
         placeholder="Search Printers"
+        placeholderTextColor="#FFFFFF" 
         onChangeText={onChangeSearch}
         value={searchQuery}
         style={styles.searchbar}
+        inputStyle={styles.searchInput} 
+        theme={{ colors: { text: '#FFFFFF' } }} 
       />
       <FlatList
         data={filteredPrinters}
@@ -74,27 +77,30 @@ const RemovePrinterScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#240046',  // Sets the background color of the container to match the theme
+    backgroundColor: '#240046',  
   },
   list: {
-    backgroundColor: '#240046',  // Sets the background color of the list to match the theme
+    backgroundColor: '#240046', 
   },
   printerItem: {
     margin: 10,
     padding: 20,
-    backgroundColor: '#6411ad', // Using the accent color for item background
+    backgroundColor: '#6411ad', 
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 5, // Optional: for slightly rounded corners
+    borderRadius: 5, 
   },
   printerText: {
     fontSize: 16,
-    color: '#FFFFFF', // Ensuring text is visible against the dark background
+    color: '#FFFFFF', 
   },
   searchbar: {
     margin: 10,
     borderRadius: 5,
-    backgroundColor: '#381e72', // A slightly different shade for contrast while fitting the theme
+    backgroundColor: '#381e72', 
+  },
+  searchInput: {
+    color: '#FFFFFF', 
   },
 });
 

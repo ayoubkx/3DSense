@@ -8,40 +8,37 @@ const ProfileScreen = ({ navigation }) => {
       <Button
         mode="contained"
         onPress={() => navigation.navigate('AddPrinterScreen')}
-        style={styles.button}
-        color="#6411ad" // Consistent with your theme's button color
+        style={[styles.button, styles.addButton]}
         labelStyle={styles.buttonText}
+        color="#7D3C98" // A distinct color for this button
       >
         Add Printer
       </Button>
       <Button
         mode="contained"
         onPress={() => navigation.navigate('RemovePrintersScreen')}
-        style={styles.button}
-        color="#6411ad"
+        style={[styles.button, styles.removeButton]}
         labelStyle={styles.buttonText}
+        color="#C0392B" // A distinct color for this button
       >
         Remove Printers
       </Button>
       <Button
         mode="contained"
         onPress={() => navigation.navigate('ViewClusterScreen')}
-        style={styles.button}
-        color="#6411ad"
+        style={[styles.button, styles.viewButton]}
         labelStyle={styles.buttonText}
+        color="#239B56" // A distinct color for this button
       >
         View Cluster
       </Button>
       <View style={styles.spacer} />
       <Button
         mode="contained"
-        onPress={() => {
-          // Implement log out functionality
-          navigation.navigate('LoginScreen');
-        }}
-        style={styles.button}
-        color="#6411ad"
+        onPress={() => navigation.navigate('LoginScreen')}
+        style={[styles.button, styles.logoutButton]}
         labelStyle={styles.buttonText}
+        color="#515A5A" // A distinct color for this button
       >
         Log Out
       </Button>
@@ -54,21 +51,32 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#240046', // Sets the background color to match the dark theme
+    backgroundColor: '#240046',
   },
   button: {
     marginVertical: 10,
-    width: '60%',
-    alignSelf: 'center',
+    width: '75%', 
+    borderRadius: 10, 
+    paddingVertical: 10, 
+    elevation: 3, 
   },
   buttonText: {
-    color: '#FFFFFF', // Sets the button text color to white for contrast
+    color: '#FFFFFF',
   },
   spacer: {
-    height: 200,  // Adjust the height to create more or less space
+    flex: 0.7, 
+  },
+  addButton: {
+    backgroundColor: '#7D3C98',
+  },
+  removeButton: {
+    backgroundColor: '#C0392B',
+  },
+  viewButton: {
+    backgroundColor: '#239B56',
   },
   logoutButton: {
-    marginTop: 50,  // Adds extra space above the logout button
+    backgroundColor: '#515A5A',
   },
 });
 
