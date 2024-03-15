@@ -3,5 +3,5 @@ import { createUser } from '../../controllers/user/createUser.js';
 
 // CREATE A USER
 export default function setupSignupRoute(app) {
-  app.post('/api/signup', createUser);
+  app.put('/api/signup', createUser);
 }
