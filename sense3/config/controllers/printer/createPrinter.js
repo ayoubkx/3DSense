@@ -1,12 +1,14 @@
 import API from '../../api.js';
 
-async function createPrinter(username, printerId, status, printerName) {
+async function createPrinter(username, printerName, printerId) {
   try {
     // Check if the user exists
-    const existingUserResponse = await API.get(`/users/${username}.json`);
+    const existingUserResponse = await API.get(
+      `/users.json?orderBy="username"&equalTo="${username}"`
+    );
     const existingUserData = existingUserResponse.data;
 
-    if (!existingUserData) {
+    if (Object.keys(existingUserData).length === 0) {
       return { error: 'User does not exist' };
     }
 
@@ -16,7 +18,7 @@ async function createPrinter(username, printerId, status, printerName) {
     );
 
     const existingPrinterData = existingPrinterResponse.data;
-    if (!existingPrinterData) {
+    if (Object.keys(existingPrinterData).length > 0) {
       // Printer with the same username and printerName already exists, return an error
       return {
         error: 'Printer with the same username and printerName already exists',
@@ -27,16 +29,15 @@ async function createPrinter(username, printerId, status, printerName) {
     const printerData = {
       username: username,
       printerId: printerId,
-      status: status,
+      status: 'idle',
       printerName: printerName,
     };
-
     const createPrinterResponse = await API.post(`/printers.json`, printerData);
 
     if (createPrinterResponse.data) {
       // Printer created successfully
       console.log('Printer created successfully:', printerData);
-      return { success: true };
+      return { success: true, printerData: printerData };
     } else {
       // Handle the case where the printer wasn't properly created
       return { error: 'Printer could not be created' };
@@ -58,12 +59,15 @@ export { createPrinter };
 //     const printerName = req.body.printerName;
 
 //     // Check if the user exists
-//     const existingUserResponse = await API.get(`/users/${username}.json`);
+//     const existingUserResponse = await API.get(
+//       `/users.json?orderBy="username"&equalTo="${username}"`
+//     );
 //     const existingUserData = existingUserResponse.data;
 
-//     if (!existingUserData) {
+//     if (Object.keys(existingUserData).length === 0) {
 //       return { error: 'User does not exist' };
 //     }
+//     console.log('alloallo');
 
 //     // Check if a printer with the same username and printerName already exists
 //     const existingPrinterResponse = await API.get(
@@ -71,7 +75,7 @@ export { createPrinter };
 //     );
 
 //     const existingPrinterData = existingPrinterResponse.data;
-//     if (!existingPrinterData) {
+//     if (Object.keys(existingPrinterData).length > 0) {
 //       // Printer with the same username and printerName already exists, return an error
 //       return {
 //         error: 'Printer with the same username and printerName already exists',
@@ -91,7 +95,7 @@ export { createPrinter };
 //     if (createPrinterResponse.data) {
 //       // Printer created successfully
 //       console.log('Printer created successfully:', printerData);
-//       return { success: true };
+//       return { success: true, printerData: printerData };
 //     } else {
 //       // Handle the case where the printer wasn't properly created
 //       return { error: 'Printer could not be created' };

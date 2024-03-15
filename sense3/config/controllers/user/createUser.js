@@ -30,7 +30,7 @@ async function createUser(username, email, password) {
 
 export { createUser };
 
-//POSTMAN TEST (UNCOMMENT WHEN TETSING THE API)
+///POSTMAN TEST (UNCOMMENT WHEN TETSING THE API)
 // import API from '../../api.js';
 // async function createUser(req, res) {
 //   try {

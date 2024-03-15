@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import setupSignupRoute from '../config/routes/user/createUser.js';
 import createprinter from '../config/routes/printer/createPrinter.js';
+import getPrinterByusername from '../config/routes/printer/getPrinterByUsername.js';
 
 const app = express();
 const PORT = 5000;
@@ -18,6 +19,7 @@ app.get('/', (req, res) => {
 
 setupSignupRoute(app); // Call the function to set up the signup route
 createprinter(app);
+getPrinterByusername(app);
 
 const server = app.listen(PORT, () => {
   console.log(`Server running on ${PORT}`);
