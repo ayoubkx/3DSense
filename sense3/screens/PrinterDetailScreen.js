@@ -1,7 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { useAuth } from '../config/contexts/AuthContext';
 
 const PrinterDetailScreen = ({ route }) => {
+  const { user } = useAuth();
   const { printer } = route.params;
 
   return (

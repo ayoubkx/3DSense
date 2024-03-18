@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Button, TextInput, Text } from 'react-native-paper';
 import { Formik } from 'formik';
+import { useAuth } from '../config/contexts/AuthContext';
 import * as Yup from 'yup';
 
 import { loginUser } from '../config/UserService'; 
@@ -13,23 +14,23 @@ const LoginSchema = Yup.object().shape({
 });
 
 const LoginScreen = ({ navigation }) => {
+  const { login } = useAuth();
+
   const handleLogin = async (values, actions) => {
     const { username, password } = values;
     const result = await loginUser(username, password);
 
     if (result.user) {
-        // User found and password confirmed
-        console.log('Login successful:', result.user);
-        // Perform navigation or state updates as needed
-        navigation.navigate('Profile');
+      console.log('Login successful:', result.user);
+      login(result.user);  // Set the user in context
+      navigation.navigate('Profile');
     } else {
-        // Login failed, display error message from result.error
-        console.error('Login error:', result.error);
-        actions.setFieldError('general', result.error);
+      console.error('Login error:', result.error);
+      actions.setFieldError('general', result.error);
     }
 
     actions.setSubmitting(false);
-};
+  };
 
 
   return (

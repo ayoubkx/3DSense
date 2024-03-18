@@ -1,44 +1,58 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 import { Button } from 'react-native-paper';
+import { useAuth } from '../config/contexts/AuthContext';
 
 const ProfileScreen = ({ navigation }) => {
+  const { user, logout } = useAuth(); // Use the context to access user and logout function
+
+  const handleLogout = () => {
+    logout();  // Call logout from context
+    navigation.replace('LoginScreen'); // Use replace to avoid going back to the profile after logging out
+  };
+
   return (
     <View style={styles.container}>
+      <Text style={styles.welcomeText}>Welcome, {user.username}!</Text> 
+
       <Button
         mode="contained"
         onPress={() => navigation.navigate('AddPrinterScreen')}
         style={[styles.button, styles.addButton]}
         labelStyle={styles.buttonText}
-        color="#7D3C98" // A distinct color for this button
+        color="#7D3C98"
       >
         Add Printer
       </Button>
+
       <Button
         mode="contained"
         onPress={() => navigation.navigate('RemovePrintersScreen')}
         style={[styles.button, styles.removeButton]}
         labelStyle={styles.buttonText}
-        color="#C0392B" // A distinct color for this button
+        color="#C0392B"
       >
         Remove Printers
       </Button>
+
       <Button
         mode="contained"
         onPress={() => navigation.navigate('ViewClusterScreen')}
         style={[styles.button, styles.viewButton]}
         labelStyle={styles.buttonText}
-        color="#239B56" // A distinct color for this button
+        color="#239B56"
       >
         View Cluster
       </Button>
+
       <View style={styles.spacer} />
+
       <Button
         mode="contained"
-        onPress={() => navigation.navigate('LoginScreen')}
+        onPress={handleLogout}
         style={[styles.button, styles.logoutButton]}
         labelStyle={styles.buttonText}
-        color="#515A5A" // A distinct color for this button
+        color="#515A5A"
       >
         Log Out
       </Button>
@@ -53,18 +67,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#240046',
   },
+  welcomeText: {
+    fontSize: 24,
+    color: '#FFFFFF',
+    marginBottom: 30, // Space above the buttons
+  },
   button: {
     marginVertical: 10,
-    width: '75%', 
-    borderRadius: 10, 
-    paddingVertical: 10, 
-    elevation: 3, 
+    width: '75%',
+    borderRadius: 10,
+    paddingVertical: 10,
+    elevation: 3,
   },
   buttonText: {
     color: '#FFFFFF',
   },
   spacer: {
-    flex: 0.7, 
+    flex: 0.7,
   },
   addButton: {
     backgroundColor: '#7D3C98',

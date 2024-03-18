@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, FlatList, Text } from 'react-native';
+import { useAuth } from '../config/contexts/AuthContext';
 
 const printers = [
   { id: '1', name: 'Printer 1', status: 'running' },
@@ -16,6 +17,7 @@ const printers = [
 ];
 
 const ViewClusterScreen = ({ navigation }) => {
+  const { user } = useAuth();
   const runningCount = printers.filter(printer => printer.status === 'running').length;
   const idleCount = printers.length - runningCount;
 
