@@ -10,7 +10,7 @@ const PrinterDetailScreen = ({ route }) => {
     <View style={styles.container}>
       <View style={styles.row}>
         <Text style={styles.label}>Name:</Text>
-        <Text style={styles.value}>{printer.name}</Text>
+        <Text style={styles.value}>{printer.printerName}</Text>
       </View>
       <View style={styles.row}>
         <Text style={styles.label}>Status:</Text>
