@@ -1,24 +1,30 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, FlatList, Text } from 'react-native';
 import { Card, Avatar } from 'react-native-paper';
 import { useAuth } from '../config/contexts/AuthContext';
-
-const printers = [
-  { id: '1', name: 'Printer 1', status: 'running' },
-  { id: '2', name: 'Printer 2', status: 'idle' },
-  { id: '3', name: 'almost printer', status: 'running' },
-  { id: '4', name: 'Cool printer', status: 'running' },
-  { id: '5', name: 'CornerPrint', status: 'running' },
-  { id: '6', name: 'HappyPrint', status: 'idle' },
-  { id: '7', name: 'HugePrinter', status: 'running' },
-  { id: '8', name: 'Amazing printer', status: 'running' },
-  { id: '9', name: 'RightPrinter', status: 'idle' },
-  { id: '10', name: 'Left Printer', status: 'running' },
-  // Additional printers can be added for demonstration
-];
+import API from '../config/api';
 
 const ViewClusterScreen = ({ navigation }) => {
   const { user } = useAuth();
+  const [printers, setPrinters] = useState([]);
+
+  useEffect(() => {
+    const fetchPrinters = async () => {
+      try {
+        const response = await API.get(`/printers.json?orderBy="username"&equalTo="${user.username}"`);
+        const fetchedPrinters = response.data ? Object.keys(response.data).map(key => ({
+          id: key, 
+          ...response.data[key],
+        })) : [];
+        setPrinters(fetchedPrinters);
+      } catch (error) {
+        console.error('Error fetching printers:', error);
+      }
+    };
+
+    fetchPrinters();
+  }, [user.username]);
+
   const runningCount = printers.filter(printer => printer.status === 'running').length;
   const idleCount = printers.length - runningCount;
 
@@ -31,7 +37,7 @@ const ViewClusterScreen = ({ navigation }) => {
         style={styles.printerText}
         onPress={() => navigation.navigate('PrinterDetailScreen', { printer: item })}
       >
-        {item.name}
+        {item.printerName}
       </Text>
     </View>
   );
