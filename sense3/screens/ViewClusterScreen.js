@@ -1,43 +1,71 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, FlatList, Text } from 'react-native';
-
-const printers = [
-  { id: '1', name: 'Printer 1', status: 'running' },
-  { id: '2', name: 'Printer 2', status: 'idle' },
-  { id: '3', name: 'Printer 3', status: 'running' },
-  { id: '4', name: 'Printer 4', status: 'running' },
-  { id: '5', name: 'Printer 5', status: 'running' },
-  { id: '6', name: 'Printer 6', status: 'idle' },
-  { id: '7', name: 'Printer 7', status: 'running' },
-  { id: '8', name: 'Printer 8', status: 'running' },
-  { id: '9', name: 'Printer 9', status: 'idle' },
-  { id: '10', name: 'Printer 10', status: 'running' },
-  // Additional printers can be added for demonstration
-];
+import { Card, Avatar } from 'react-native-paper';
+import { useAuth } from '../config/contexts/AuthContext';
+import API from '../config/api';
+import db from '../config/firebaseconfig';
+import { getDatabase, ref, onValue, query, orderByChild, equalTo } from 'firebase/database';;
 
 const ViewClusterScreen = ({ navigation }) => {
+  const { user } = useAuth();
+  const [printers, setPrinters] = useState([]);
+
+  useEffect(() => {
+    const dbRef = ref(db, 'printers');
+    const printersQuery = query(dbRef, orderByChild('username'), equalTo(user.username));
+  
+    const unsubscribe = onValue(printersQuery, (snapshot) => {
+      const data = snapshot.val();
+      const fetchedPrinters = data ? Object.keys(data).map(key => ({
+        id: key,
+        ...data[key],
+      })) : [];
+      setPrinters(fetchedPrinters);
+    });
+  
+    return () => unsubscribe();
+  }, [user.username]);
+  
+
   const runningCount = printers.filter(printer => printer.status === 'running').length;
   const idleCount = printers.length - runningCount;
 
   const renderItem = ({ item }) => (
     <View style={[
       styles.printerSquare,
-      { backgroundColor: item.status === 'running' ? '#4CAF50' : '#F44336' }, // Green for running, red for idle
+      { backgroundColor: item.status === 'running' ? '#4CAF50' : '#F44336' },
     ]}>
       <Text
         style={styles.printerText}
         onPress={() => navigation.navigate('PrinterDetailScreen', { printer: item })}
       >
-        {item.name}
+        {item.printerName}
       </Text>
     </View>
   );
 
   return (
     <View style={styles.screen}>
+      <Text style={styles.username}>Hello, {user.username}</Text>
       <View style={styles.statusContainer}>
-        <Text style={styles.statusText}>Running: {runningCount}</Text>
-        <Text style={styles.statusText}>Idle: {idleCount}</Text>
+        <Card style={styles.card}>
+          <Card.Title
+            title="Running"
+            subtitle={`${runningCount} printers`}
+            left={(props) => <Avatar.Icon {...props} icon="printer" style={styles.iconRunning} />}
+            titleStyle={styles.cardTitle}
+            subtitleStyle={styles.cardSubtitle}
+          />
+        </Card>
+        <Card style={styles.card}>
+          <Card.Title
+            title="Idle"
+            subtitle={`${idleCount} printers`}
+            left={(props) => <Avatar.Icon {...props} icon="printer-off" style={styles.iconIdle} />}
+            titleStyle={styles.cardTitle}
+            subtitleStyle={styles.cardSubtitle}
+          />
+        </Card>
       </View>
       <FlatList
         data={printers}
@@ -52,18 +80,35 @@ const ViewClusterScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: '#240046', // Background color from your theme
+    backgroundColor: '#240046',
+  },
+  username: {
+    color: '#FFFFFF',
+    fontSize: 20,
+    fontWeight: 'bold',
+    padding: 10,
+    textAlign: 'center',
   },
   statusContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-evenly',
     padding: 10,
-    backgroundColor: '#240046', // Consistent with the theme's background color
   },
-  statusText: {
-    color: '#FFFFFF', // White color for better readability
-    fontSize: 18,
-    fontWeight: 'bold',
+  card: {
+    backgroundColor: '#381e72',
+    width: '45%',
+  },
+  iconRunning: {
+    backgroundColor: '#4CAF50',
+  },
+  iconIdle: {
+    backgroundColor: '#F44336',
+  },
+  cardTitle: {
+    color: '#FFFFFF',
+  },
+  cardSubtitle: {
+    color: '#FFFFFF',
   },
   printerSquare: {
     flex: 1,

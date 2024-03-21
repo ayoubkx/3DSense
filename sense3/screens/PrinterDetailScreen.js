@@ -1,14 +1,16 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { useAuth } from '../config/contexts/AuthContext';
 
 const PrinterDetailScreen = ({ route }) => {
+  const { user } = useAuth();
   const { printer } = route.params;
 
   return (
     <View style={styles.container}>
       <View style={styles.row}>
         <Text style={styles.label}>Name:</Text>
-        <Text style={styles.value}>{printer.name}</Text>
+        <Text style={styles.value}>{printer.printerName}</Text>
       </View>
       <View style={styles.row}>
         <Text style={styles.label}>Status:</Text>

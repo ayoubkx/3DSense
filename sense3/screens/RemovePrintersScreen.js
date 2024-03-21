@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, FlatList, Alert, TouchableOpacity, Text, TextInput } from 'react-native';
 import { Searchbar } from 'react-native-paper';
+import { useAuth } from '../config/contexts/AuthContext';
 
 const mockPrinters = [
   { id: '1', name: 'Printer 1', status: 'running' },
@@ -18,6 +19,7 @@ const mockPrinters = [
 
 
 const RemovePrinterScreen = () => {
+  const { user } = useAuth();
   const [printers, setPrinters] = useState(mockPrinters);
   const [searchQuery, setSearchQuery] = useState('');
 
