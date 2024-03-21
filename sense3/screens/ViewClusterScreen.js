@@ -3,27 +3,29 @@ import { View, StyleSheet, FlatList, Text } from 'react-native';
 import { Card, Avatar } from 'react-native-paper';
 import { useAuth } from '../config/contexts/AuthContext';
 import API from '../config/api';
+import db from '../config/firebaseconfig';
+import { getDatabase, ref, onValue, query, orderByChild, equalTo } from 'firebase/database';;
 
 const ViewClusterScreen = ({ navigation }) => {
   const { user } = useAuth();
   const [printers, setPrinters] = useState([]);
 
   useEffect(() => {
-    const fetchPrinters = async () => {
-      try {
-        const response = await API.get(`/printers.json?orderBy="username"&equalTo="${user.username}"`);
-        const fetchedPrinters = response.data ? Object.keys(response.data).map(key => ({
-          id: key, 
-          ...response.data[key],
-        })) : [];
-        setPrinters(fetchedPrinters);
-      } catch (error) {
-        console.error('Error fetching printers:', error);
-      }
-    };
-
-    fetchPrinters();
+    const dbRef = ref(db, 'printers');
+    const printersQuery = query(dbRef, orderByChild('username'), equalTo(user.username));
+  
+    const unsubscribe = onValue(printersQuery, (snapshot) => {
+      const data = snapshot.val();
+      const fetchedPrinters = data ? Object.keys(data).map(key => ({
+        id: key,
+        ...data[key],
+      })) : [];
+      setPrinters(fetchedPrinters);
+    });
+  
+    return () => unsubscribe();
   }, [user.username]);
+  
 
   const runningCount = printers.filter(printer => printer.status === 'running').length;
   const idleCount = printers.length - runningCount;
