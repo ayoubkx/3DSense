@@ -5,7 +5,7 @@ async function getuserprinters(username, printerName) {
   try {
     // Check if the user has printers
     const existingPrinters = await API.get(
-      `/printers.json?orderBy="username"&equalTo="${username}"`
+      `/printers.json?orderBy="username"&equalTo="${username}"&orderBy="printerName"&equalTo="${printerName}"`
     );
 
     const existingPrintersDatas = existingPrinters.data;
@@ -19,3 +19,5 @@ async function getuserprinters(username, printerName) {
     return { error: 'An error occurred while searching for printers' };
   }
 }
+
+export { getuserprinters };
