@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, FlatList, Alert, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, FlatList, Alert, TouchableOpacity, Text, TextInput } from 'react-native';
 import { Searchbar } from 'react-native-paper';
 import { useAuth } from '../config/contexts/AuthContext';
 import API from '../config/api'; 
