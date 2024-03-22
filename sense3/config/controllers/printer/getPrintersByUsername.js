@@ -9,7 +9,6 @@ async function getPrintersByUsername(username) {
     );
 
     const existingPrintersDatas = existingPrinters.data;
-    console.log(existingPrintersDatas);
 
     if (Object.keys(existingPrintersDatas).length === 0) {
       return { success: 'No printers found for this username' };
@@ -23,7 +22,9 @@ async function getPrintersByUsername(username) {
 
 export { getPrintersByUsername };
 
-// // POSTMAN TEST (UNCOMMENT WHEN TETSING THE API)
+// POSTMAN TEST (UNCOMMENT WHEN TETSING THE API)
+
+// import API from '../../api.js';
 // async function getPrintersByUsername(req, res) {
 //   try {
 //     const username = req.body.username;
@@ -36,9 +37,11 @@ export { getPrintersByUsername };
 //     const existingPrintersDatas = existingPrinters.data;
 
 //     if (Object.keys(existingPrintersDatas).length === 0) {
+//       console.log('No printers found for this username');
 //       return { success: 'No printers found for this username' };
-//     } else
-//       return { success: 'Printers found', printers: existingPrintersDatas };
+//     } else console.log('Printers found for this username:');
+//     console.log(existingPrintersDatas);
+//     return { success: 'Printers found', printers: existingPrintersDatas };
 //   } catch (error) {
 //     console.error('Error searching for printer:', error);
 //     return { error: 'An error occurred while searching for printers' };

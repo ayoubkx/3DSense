@@ -1,7 +1,6 @@
-// Adjust the import statement to import the named export createUser
 import { getPrintersByUsername } from '../../controllers/printer/getPrintersByUsername.js';
 
-// CREATE A USER
+// get all the printers of a user printer by  enteringthe username
 export default function getPrintersByusername(app) {
   app.get('/api/getuserprinters', getPrintersByUsername);
 }

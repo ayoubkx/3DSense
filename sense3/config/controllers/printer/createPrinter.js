@@ -1,28 +1,30 @@
 import API from '../../api.js';
 
-async function createPrinter(username, printerName, printerId) {
+async function createPrinter(username, printerName) {
   try {
     // Check if the user exists
-    const existingUserResponse = await API.get(
-      `/users.json?orderBy="username"&equalTo="${username}"`
-    );
+    const existingUserResponse = await API.get(`/users/${username}.json`);
     const existingUserData = existingUserResponse.data;
 
-    if (Object.keys(existingUserData).length === 0) {
-      return { error: 'User does not exist' };
+    if (!existingUserData) {
+      return { error: 'User dosnt exist' };
     }
 
     // Check if a printer with the same username and printerName already exists
     const existingPrinterResponse = await API.get(
-      `/printers.json?orderBy="username"&equalTo="${username}"&orderBy="printerName"&equalTo="${printerName}"`
+      `/printers.json?orderBy="username"&equalTo="${username}"`
     );
 
-    const existingPrinterData = existingPrinterResponse.data;
-    if (Object.keys(existingPrinterData).length > 0) {
-      // Printer with the same username and printerName already exists, return an error
-      return {
-        error: 'Printer with the same username and printerName already exists',
-      };
+    const existingPrinters = existingPrinterResponse.data;
+
+    // Iterate through the user printers to see if one is  matching the  printerName
+    for (const key in existingPrinters) {
+      if (existingPrinters[key].printerName === printerName) {
+        return {
+          error:
+            'Printer with the same username and printerName already exists',
+        };
+      }
     }
 
     // Create the printer
@@ -36,7 +38,7 @@ async function createPrinter(username, printerName, printerId) {
 
     if (createPrinterResponse.data) {
       // Printer created successfully
-      console.log('Printer created successfully:', printerData);
+
       return { success: true, printerData: printerData };
     } else {
       // Handle the case where the printer wasn't properly created
@@ -59,27 +61,39 @@ export { createPrinter };
 //     const printerName = req.body.printerName;
 
 //     // Check if the user exists
-//     const existingUserResponse = await API.get(
-//       `/users.json?orderBy="username"&equalTo="${username}"`
-//     );
+//     const existingUserResponse = await API.get(`/users/${username}.json`);
 //     const existingUserData = existingUserResponse.data;
 
-//     if (Object.keys(existingUserData).length === 0) {
-//       return { error: 'User does not exist' };
+//     if (!existingUserData) {
+//       console.log('User dosnt exist');
+//       return { error: 'User dosnt exist' };
 //     }
-//     console.log('alloallo');
 
 //     // Check if a printer with the same username and printerName already exists
 //     const existingPrinterResponse = await API.get(
-//       `/printers.json?orderBy="username"&equalTo="${username}"&orderBy="printerName"&equalTo="${printerName}"`
+//       `/printers.json?orderBy="username"&equalTo="${username}"`
 //     );
 
-//     const existingPrinterData = existingPrinterResponse.data;
-//     if (Object.keys(existingPrinterData).length > 0) {
-//       // Printer with the same username and printerName already exists, return an error
-//       return {
-//         error: 'Printer with the same username and printerName already exists',
-//       };
+//     const existingPrinters = existingPrinterResponse.data;
+
+//     // Iterate through the user printers to see if one is  matching the  printerName
+//     let matchingPrinter = null;
+//     for (const key in existingPrinters) {
+//       if (existingPrinters[key].printerName === printerName) {
+//         matchingPrinter = key;
+
+//         console.log('This printer already  exist for this user');
+//         console.log(
+//           'Here the matching printer : ' +
+//             key +
+//             ': ' +
+//             existingPrinters[key].printerName
+//         );
+//         return {
+//           error:
+//             'Printer with the same username and printerName already exists',
+//         };
+//       }
 //     }
 
 //     // Create the printer
