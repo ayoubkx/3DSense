@@ -1,15 +1,31 @@
 import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 import { useAuth } from '../config/contexts/AuthContext';
+import { createPrinter } from '../config/controllers/printer/createPrinter'; 
 
 const AddPrinterScreen = ({ navigation }) => {
   const { user } = useAuth();
   const [printerName, setPrinterName] = useState('');
-  
-  const handleAddPrinter = () => {
-    console.log('Adding Printer:', printerName);
-    navigation.navigate('ProfileScreen');
+
+  const handleAddPrinter = async () => {
+    if (!printerName.trim()) {
+      Alert.alert('Error', 'Please enter a printer name.');
+      return;
+    }
+
+    // Call the createPrinter function with the current user's username and the provided printer name
+    const result = await createPrinter(user.username, printerName);
+
+    // Handle the response from the createPrinter function
+    if (result.success) {
+      console.log('Printer added successfully:', result.printerData);
+      Alert.alert('Success', 'Printer added successfully.');
+      navigation.navigate('ProfileScreen');
+    } else {
+      console.error('Error adding printer:', result.error);
+      Alert.alert('Error', result.error || 'Failed to add printer.');
+    }
   };
 
   return (
