@@ -3,7 +3,7 @@ import API from '../../api.js';
 // This function finds a specific user printer by its PrinterName and deletes it from the database
 async function deletePrinter(username, printerName) {
   try {
-    // Retrive all printer with this username
+    // Check if the user has this printer
     const existingPrintersResponse = await API.get(
       `/printers.json?orderBy="username"&equalTo="${username}"`
     );
@@ -11,26 +11,41 @@ async function deletePrinter(username, printerName) {
     const existingPrinters = existingPrintersResponse.data;
 
     // Iterate through the printers to find the one with the matching printerName
+    let printerId = null;
     let printerKeyToDelete = null;
     let deletedPrinter = null;
     for (const key in existingPrinters) {
       if (existingPrinters[key].printerName === printerName) {
         printerKeyToDelete = key;
         deletedPrinter = existingPrinters[key];
+        printerId = existingPrinters[key].printerId;
 
+        console.log(' printer db Identifier to delete : ' + key);
         break;
       }
     }
 
     if (!printerKeyToDelete) {
+      console.log('This printer does not exist');
       return { success: 'No printers found for this username and printerName' };
     } else {
+      const printerData = {
+        username: 0,
+        status: 'idle',
+        printerName: 0,
+        printerId: printerId,
+      };
       // Delete the printer from the database
-      await API.delete(`/printers/${printerKeyToDelete}.json`);
+      const deletedPrinterResponse = await API.put(
+        `/printers/${printerKeyToDelete}.json`,
+        printerData
+      );
 
+      console.log('Printer is delated successfully:');
+      console.log(deletedPrinter);
       return {
         success: 'Printer deleted successfully',
-        deletedPrinter: deletedPrinter,
+        deletedPrinter: deletedPrinterResponse.data,
       };
     }
   } catch (error) {
@@ -41,7 +56,7 @@ async function deletePrinter(username, printerName) {
 
 export { deletePrinter };
 
-// //POSTMAN TEST
+//POSTMAN TEST
 
 // import API from '../../api.js';
 
@@ -59,12 +74,14 @@ export { deletePrinter };
 //     const existingPrinters = existingPrintersResponse.data;
 
 //     // Iterate through the printers to find the one with the matching printerName
+//     let printerId = null;
 //     let printerKeyToDelete = null;
 //     let deletedPrinter = null;
 //     for (const key in existingPrinters) {
 //       if (existingPrinters[key].printerName === printerName) {
 //         printerKeyToDelete = key;
 //         deletedPrinter = existingPrinters[key];
+//         printerId = existingPrinters[key].printerId;
 
 //         console.log(' printer db Identifier to delete : ' + key);
 //         break;
@@ -75,9 +92,16 @@ export { deletePrinter };
 //       console.log('This printer does not exist');
 //       return { success: 'No printers found for this username and printerName' };
 //     } else {
+//       const printerData = {
+//         username: 0,
+//         status: 'idle',
+//         printerName: 0,
+//         printerId: printerId,
+//       };
 //       // Delete the printer from the database
-//       const deletedPrinterResponse = await API.delete(
-//         `/printers/${printerKeyToDelete}.json`
+//       const deletedPrinterResponse = await API.put(
+//         `/printers/${printerKeyToDelete}.json`,
+//         printerData
 //       );
 
 //       console.log('Printer is delated successfully:');

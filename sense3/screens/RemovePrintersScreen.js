@@ -1,39 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, FlatList, Alert, TouchableOpacity, Text, TextInput } from 'react-native';
 import { Searchbar } from 'react-native-paper';
 import { useAuth } from '../config/contexts/AuthContext';
-
-const mockPrinters = [
-  { id: '1', name: 'Printer 1', status: 'running' },
-  { id: '2', name: 'Printer 2', status: 'idle' },
-  { id: '3', name: 'almost printer', status: 'running' },
-  { id: '4', name: 'Cool printer', status: 'running' },
-  { id: '5', name: 'CornerPrint', status: 'running' },
-  { id: '6', name: 'HappyPrint', status: 'idle' },
-  { id: '7', name: 'HugePrinter', status: 'running' },
-  { id: '8', name: 'Amazing printer', status: 'running' },
-  { id: '9', name: 'RightPrinter', status: 'idle' },
-  { id: '10', name: 'Left Printer', status: 'running' },
-  // Additional printers can be added for demonstration
-];
-
+import API from '../config/api'; 
 
 const RemovePrinterScreen = () => {
   const { user } = useAuth();
-  const [printers, setPrinters] = useState(mockPrinters);
+  const [printers, setPrinters] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const handleRemovePrinter = (printerId) => {
+  useEffect(() => {
+    const fetchPrinters = async () => {
+      try {
+        const response = await API.get(`/printers.json?orderBy="username"&equalTo="${user.username}"`);
+        const fetchedPrinters = response.data ? Object.entries(response.data).map(([id, data]) => ({
+          id,
+          ...data
+        })) : [];
+        setPrinters(fetchedPrinters);
+      } catch (error) {
+        console.error("Error fetching printers:", error);
+        Alert.alert("Error", "Failed to fetch printers.");
+      }
+    };
+
+    fetchPrinters();
+  }, [user.username]);
+
+  const handleRemovePrinter = async (printerId) => {
     Alert.alert(
       'Remove Printer',
       'Are you sure you want to remove this printer?',
       [
         { text: 'Cancel', style: 'cancel' },
         {
-          text: 'OK', onPress: () => {
-            const updatedPrinters = printers.filter(printer => printer.id !== printerId);
-            setPrinters(updatedPrinters);
-            // Backend removal logic should also go here
+          text: 'OK', onPress: async () => {
+            try {
+              await API.delete(`/printers/${printerId}.json`);
+              const updatedPrinters = printers.filter(printer => printer.id !== printerId);
+              setPrinters(updatedPrinters);
+              Alert.alert("Success", "Printer removed successfully.");
+            } catch (error) {
+              console.error("Error removing printer:", error);
+              Alert.alert("Error", "Failed to remove printer.");
+            }
           }
         },
       ]
@@ -43,7 +53,7 @@ const RemovePrinterScreen = () => {
   const onChangeSearch = query => setSearchQuery(query);
 
   const filteredPrinters = searchQuery.length > 0
-    ? printers.filter(printer => printer.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    ? printers.filter(printer => printer.printerName.toLowerCase().includes(searchQuery.toLowerCase()))
     : printers;
 
   const renderItem = ({ item }) => (
@@ -51,7 +61,7 @@ const RemovePrinterScreen = () => {
       style={styles.printerItem}
       onPress={() => handleRemovePrinter(item.id)}
     >
-      <Text style={styles.printerText}>{item.name}</Text>
+      <Text style={styles.printerText}>{item.printerName}</Text>
     </TouchableOpacity>
   );
 
