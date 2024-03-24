@@ -7,21 +7,22 @@ import { createPrinter } from '../config/controllers/printer/createPrinter';
 const AddPrinterScreen = ({ navigation }) => {
   const { user } = useAuth();
   const [printerName, setPrinterName] = useState('');
+  const [printerId, setPrinterId] = useState('');
 
   const handleAddPrinter = async () => {
-    if (!printerName.trim()) {
-      Alert.alert('Error', 'Please enter a printer name.');
+    if (!printerName.trim() || !printerId.trim()) {
+      Alert.alert('Error', 'Please enter both printer name and ID.');
       return;
     }
 
-    // Call the createPrinter function with the current user's username and the provided printer name
-    const result = await createPrinter(user.username, printerName);
+    // Call the createPrinter function 
+    const result = await createPrinter(user.username, printerName, printerId);
 
     // Handle the response from the createPrinter function
     if (result.success) {
       console.log('Printer added successfully:', result.printerData);
       Alert.alert('Success', 'Printer added successfully.');
-      navigation.navigate('ProfileScreen');
+      navigation.navigate('Profile');
     } else {
       console.error('Error adding printer:', result.error);
       Alert.alert('Error', result.error || 'Failed to add printer.');
@@ -31,11 +32,17 @@ const AddPrinterScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <TextInput
+        label="Printer ID"
+        value={printerId}
+        onChangeText={setPrinterId}
+        mode="contained"
+        style={styles.input}
+      />
+      <TextInput
         label="Printer Name"
         value={printerName}
         onChangeText={setPrinterName}
         mode="contained"
-        theme={{ colors: { primary: '#6411ad', underlineColor: 'transparent', background: '#240046' } }}
         style={styles.input}
       />
       <Button
@@ -50,6 +57,7 @@ const AddPrinterScreen = ({ navigation }) => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {

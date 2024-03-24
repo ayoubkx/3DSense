@@ -13,7 +13,7 @@ const ProfileScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.welcomeText}>Welcome, {user.username}!</Text> 
+      <Text style={styles.welcomeText}>Welcome, {user ? user.username : ''}!</Text> 
 
       <Button
         mode="contained"
@@ -25,15 +25,7 @@ const ProfileScreen = ({ navigation }) => {
         Add Printer
       </Button>
 
-      <Button
-        mode="contained"
-        onPress={() => navigation.navigate('RemovePrintersScreen')}
-        style={[styles.button, styles.removeButton]}
-        labelStyle={styles.buttonText}
-        color="#C0392B"
-      >
-        Remove Printers
-      </Button>
+      
 
       <Button
         mode="contained"
