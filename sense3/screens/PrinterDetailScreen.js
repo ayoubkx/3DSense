@@ -8,18 +8,36 @@ const PrinterDetailScreen = ({ route, navigation }) => {
   const { user } = useAuth();
   const { printer } = route.params;
 
-  const handleDeletePrinter = async () => {
-    // Call the deletePrinter function with the username and printer name
-    const response = await deletePrinter(user.username, printer.printerName);
-    if (response.success) {
-      Alert.alert('Success', 'Printer deleted successfully');
-      // Navigate back to the previous screen 
-      navigation.navigate('ViewClusterScreen');
-    } else {
-      Alert.alert('Error', 'Failed to delete printer');
-    }
+  const handleDeletePrinter = () => {
+    Alert.alert(
+      "Confirm Delete",
+      "Are you sure you want to delete this printer?",
+      [
+        // The "No" button
+        // Does nothing but dismiss the dialog when pressed
+        {
+          text: "No",
+          style: "cancel",
+        },
+        // The "Yes" button
+        {
+          text: "Yes",
+          onPress: async () => {
+            const response = await deletePrinter(user.username, printer.printerName);
+            if (response.success) {
+              Alert.alert('Success', 'Printer deleted successfully');
+              // Navigate back to the cluster screen
+              navigation.navigate('ViewClusterScreen');
+            } else {
+              Alert.alert('Error', response.error || 'Failed to delete printer');
+            }
+          },
+        },
+      ],
+      { cancelable: true } // This allows the alert to be dismissed by tapping outside of the alert dialog
+    );
   };
-
+  
   return (
     <View style={styles.container}>
       {/* Printer details */}

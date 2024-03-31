@@ -23,7 +23,7 @@ function App() {
           initialRouteName="HomeScreen"
           screenOptions={{
             headerStyle: {
-              backgroundColor: '#240046', // Set your desired color
+              backgroundColor: '#240046', 
             },
             headerTintColor: '#fff', // Sets the color of the header title and buttons
             headerTitleStyle: {
