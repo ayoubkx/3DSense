@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { View, StyleSheet, FlatList, Text, Alert } from 'react-native';
 import { Card, Avatar } from 'react-native-paper';
+import { getuserprinter} from '../config/controllers/printer/getUserPrinter';
 
 
 import { useAuth } from '../config/contexts/AuthContext';
@@ -27,16 +28,21 @@ const ViewClusterScreen = ({ navigation }) => {
 
       if (!isFirstLoadRef.current) {
         // Only trigger notification for printers that just went idle and it's not the first load
-        fetchedPrinters.forEach(printer => {
+        fetchedPrinters.forEach(async printer => {
           const prevPrinter = prevPrintersRef.current[printer.id];
           if (printer.status === 'idle' && (!prevPrinter || prevPrinter.status !== 'idle')) {
-            triggerNotification(printer);
+            try {
+              const latestPrinterInfo = await getuserprinter(prevPrinter.printerId);
+              triggerNotification(latestPrinterInfo.printer);
+            } catch (error) {
+              console.error('Error fetching printer information:', error);
+            }
           }
         });
       } else {
         isFirstLoadRef.current = false; // Update flag after the first load
       }
-
+      
       prevPrintersRef.current = fetchedPrinters.reduce((acc, printer) => ({
         ...acc,
         [printer.id]: printer,
