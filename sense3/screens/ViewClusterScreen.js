@@ -12,6 +12,7 @@ const ViewClusterScreen = ({ navigation }) => {
   const { user } = useAuth();
   const [printers, setPrinters] = useState([]);
   const prevPrintersRef = useRef({}); // Use useRef to keep track of the previous printers state
+  const isFirstLoadRef = useRef(true); // Track if it's the first load
 
   useEffect(() => {
     const dbRef = ref(db, 'printers');
@@ -24,15 +25,18 @@ const ViewClusterScreen = ({ navigation }) => {
         ...data[key],
       })) : [];
 
-      // New logic to determine which printer just went idle
-      fetchedPrinters.forEach(printer => {
-        const prevPrinter = prevPrintersRef.current[printer.id];
-        if (printer.status === 'idle' && (!prevPrinter || prevPrinter.status !== 'idle')) {
-          triggerNotification(printer); // Trigger notification for printer that just went idle
-        }
-      });
+      if (!isFirstLoadRef.current) {
+        // Only trigger notification for printers that just went idle and it's not the first load
+        fetchedPrinters.forEach(printer => {
+          const prevPrinter = prevPrintersRef.current[printer.id];
+          if (printer.status === 'idle' && (!prevPrinter || prevPrinter.status !== 'idle')) {
+            triggerNotification(printer);
+          }
+        });
+      } else {
+        isFirstLoadRef.current = false; // Update flag after the first load
+      }
 
-      // Update the previous printers state with the current state for the next comparison
       prevPrintersRef.current = fetchedPrinters.reduce((acc, printer) => ({
         ...acc,
         [printer.id]: printer,
