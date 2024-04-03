@@ -37,6 +37,33 @@ const PrinterDetailScreen = ({ route, navigation }) => {
       { cancelable: true } // This allows the alert to be dismissed by tapping outside of the alert dialog
     );
   };
+
+  const calculateRunningTime = () => {
+    if (!printer.startTime) return 'N/A';
+    
+    // Manually parse the date string
+    const dateTimeParts = printer.startTime.match(/(\d+).(\d+).(\d+), (\d+):(\d+):(\d+) (\w+)/);
+    if (!dateTimeParts) return 'N/A';
+  
+    const month = parseInt(dateTimeParts[1], 10) - 1; // Adjust month (-1) because months are 0-indexed in JavaScript
+    const day = parseInt(dateTimeParts[2], 10);
+    const year = parseInt(dateTimeParts[3], 10);
+    const hours = parseInt(dateTimeParts[4], 10) + (dateTimeParts[7] === 'PM' ? 12 : 0); // Convert PM hours to 24-hour format
+    const minutes = parseInt(dateTimeParts[5], 10);
+    const seconds = parseInt(dateTimeParts[6], 10);
+  
+    const startTime = new Date(year, month, day, hours, minutes, seconds);
+    const currentTime = new Date();
+    const diff = currentTime - startTime; // difference in milliseconds
+  
+    const elapsedHours = Math.floor(diff / (1000 * 60 * 60));
+    const elapsedMinutes = Math.floor((diff / (1000 * 60)) % 60);
+  
+    return `${elapsedHours}h ${elapsedMinutes}m`;
+  };
+
+  const runningTimeDisplay = printer.runningTime ? printer.runningTime : calculateRunningTime();
+
   
   return (
     <View style={styles.container}>
@@ -50,12 +77,16 @@ const PrinterDetailScreen = ({ route, navigation }) => {
         <Text style={styles.value}>{printer.status}</Text>
       </View>
       <View style={styles.row}>
-        <Text style={styles.label}>Printing Time:</Text>
-        <Text style={styles.value}>{printer.printingTime || 'N/A'}</Text>
+        <Text style={styles.label}>Start Time:</Text>
+        <Text style={styles.value}>{printer.startTime || 'N/A'}</Text>
       </View>
       <View style={styles.row}>
-        <Text style={styles.label}>Idle Time:</Text>
-        <Text style={styles.value}>{printer.idleTime || 'N/A'}</Text>
+        <Text style={styles.label}>End Time:</Text>
+        <Text style={styles.value}>{printer.endTime || 'N/A'}</Text>
+      </View>
+      <View style={styles.row}>
+      <Text style={styles.label}>Running Time:</Text>
+        <Text style={styles.value}>{runningTimeDisplay}</Text>
       </View>
       <View style={styles.row}>
         <Text style={styles.label}>Uptime in Last 24hrs:</Text>
