@@ -40,26 +40,27 @@ const PrinterDetailScreen = ({ route, navigation }) => {
 
   const calculateRunningTime = () => {
     if (!printer.startTime) return 'N/A';
-    
-    // Manually parse the date string
-    const dateTimeParts = printer.startTime.match(/(\d+).(\d+).(\d+), (\d+):(\d+):(\d+) (\w+)/);
+  
+    // Parse the date string
+    const dateTimeParts = printer.startTime.match(/(\d+)\/(\d+)\/(\d+), (\d+):(\d+):(\d+) (\w+)/);
     if (!dateTimeParts) return 'N/A';
   
-    const month = parseInt(dateTimeParts[1], 10) - 1; // Adjust month (-1) because months are 0-indexed in JavaScript
-    const day = parseInt(dateTimeParts[2], 10);
-    const year = parseInt(dateTimeParts[3], 10);
-    const hours = parseInt(dateTimeParts[4], 10) + (dateTimeParts[7] === 'PM' ? 12 : 0); // Convert PM hours to 24-hour format
-    const minutes = parseInt(dateTimeParts[5], 10);
-    const seconds = parseInt(dateTimeParts[6], 10);
+    const [ , month, day, year, hour, minute, second, meridiem] = dateTimeParts;
+    let hours = parseInt(hour, 10);
+    // Adjust for AM/PM
+    if (meridiem === 'PM' && hours < 12) hours += 12;
+    if (meridiem === 'AM' && hours === 12) hours = 0;
   
-    const startTime = new Date(year, month, day, hours, minutes, seconds);
-    const currentTime = new Date();
-    const diff = currentTime - startTime; // difference in milliseconds
+    // Construct a Date object using local time
+    const startTime = new Date(year, month - 1, day, hours, parseInt(minute, 10), parseInt(second, 10));
+    const currentTime = new Date(); // Already in local timezone
+    const diff = currentTime - startTime; // Difference in milliseconds
   
-    const elapsedHours = Math.floor(diff / (1000 * 60 * 60));
-    const elapsedMinutes = Math.floor((diff / (1000 * 60)) % 60);
+    const elapsedHours = Math.floor(diff / (3600 * 1000));
+    const elapsedMinutes = Math.floor((diff / (60 * 1000)) % 60);
+    const elapsedSeconds = Math.floor((diff / 1000) % 60); // Calculate seconds
   
-    return `${elapsedHours}h ${elapsedMinutes}m`;
+    return `${elapsedHours}h ${elapsedMinutes}m ${elapsedSeconds}s`;
   };
 
   const runningTimeDisplay = printer.runningTime ? printer.runningTime : calculateRunningTime();
