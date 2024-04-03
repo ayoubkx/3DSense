@@ -1,21 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, FlatList, Text, Platform  } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { View, StyleSheet, FlatList, Text, Alert } from 'react-native';
 import { Card, Avatar } from 'react-native-paper';
 
-import * as Notifications from 'expo-notifications';
-import Constants from 'expo-constants';
 
 import { useAuth } from '../config/contexts/AuthContext';
 import db from '../config/firebaseconfig';
-import { getDatabase, ref, onValue, query, orderByChild, equalTo } from 'firebase/database';
+import { ref, onValue, query, orderByChild, equalTo } from 'firebase/database';
 
 
 const ViewClusterScreen = ({ navigation }) => {
   const { user } = useAuth();
   const [printers, setPrinters] = useState([]);
+  const prevPrintersRef = useRef({}); // Use useRef to keep track of the previous printers state
 
   useEffect(() => {
-    registerForPushNotificationsAsync();
     const dbRef = ref(db, 'printers');
     const printersQuery = query(dbRef, orderByChild('username'), equalTo(user.username));
 
@@ -26,13 +24,19 @@ const ViewClusterScreen = ({ navigation }) => {
         ...data[key],
       })) : [];
 
-      // Check for any printer that just went idle and trigger a notification
+      // New logic to determine which printer just went idle
       fetchedPrinters.forEach(printer => {
-        if (printer.status === 'idle') {
-          // Trigger a local notification
-          triggerNotification(printer.printerName);
+        const prevPrinter = prevPrintersRef.current[printer.id];
+        if (printer.status === 'idle' && (!prevPrinter || prevPrinter.status !== 'idle')) {
+          triggerNotification(printer); // Trigger notification for printer that just went idle
         }
       });
+
+      // Update the previous printers state with the current state for the next comparison
+      prevPrintersRef.current = fetchedPrinters.reduce((acc, printer) => ({
+        ...acc,
+        [printer.id]: printer,
+      }), {});
 
       setPrinters(fetchedPrinters);
     });
@@ -40,44 +44,20 @@ const ViewClusterScreen = ({ navigation }) => {
     return () => unsubscribe();
   }, [user.username]);
 
-  async function triggerNotification(printerName) {
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: "Printer Idle",
-        body: `${printerName} has gone idle.`,
-        data: { data: 'goes here' },
-      },
-      trigger: { seconds: 1 },
-    });
-  }
-
-  async function registerForPushNotificationsAsync() {
-    let token;
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
-    let finalStatus = existingStatus;
-    if (existingStatus !== 'granted') {
-      const { status } = await Notifications.requestPermissionsAsync();
-      finalStatus = status;
-    }
-    if (finalStatus !== 'granted') {
-      alert('Failed to get push token for push notification!');
-      return;
-    }
-    const projectId = Constants.expoConfig?.projectId;
-
-    token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
-    console.log(token);
-  
-    if (Platform.OS === 'android') {
-      Notifications.setNotificationChannelAsync('default', {
-        name: 'default',
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: '#FF231F7C',
-      });
-    }
-
-    return token;
+  async function triggerNotification(printer) {
+    Alert.alert(
+      "Printer Idle", 
+      `${printer.printerName} has gone idle.`,
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        { 
+          text: 'View Details', onPress: () => navigation.navigate('PrinterDetailScreen', { printer }) 
+        }
+      ]
+    );
   }
 
   const runningCount = printers.filter(printer => printer.status === 'running').length;
