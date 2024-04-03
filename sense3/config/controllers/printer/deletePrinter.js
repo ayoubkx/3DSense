@@ -34,6 +34,9 @@ async function deletePrinter(username, printerName) {
         status: 'idle',
         printerName: 0,
         printerId: printerId,
+        startTime: null,
+        endTime: null,
+        runningTime: 0,
       };
       // Delete the printer from the database
       const deletedPrinterResponse = await API.put(
