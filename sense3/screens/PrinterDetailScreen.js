@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import { Button } from 'react-native-paper';
 import { useAuth } from '../config/contexts/AuthContext';
 import { deletePrinter } from '../config/controllers/printer/deletePrinter';
@@ -8,6 +8,7 @@ import { getuserprinter} from '../config/controllers/printer/getUserPrinter';
 const PrinterDetailScreen = ({ route, navigation }) => {
   const { user } = useAuth();
   const { printer } = route.params;
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handleDeletePrinter = () => {
     Alert.alert(
@@ -39,19 +40,18 @@ const PrinterDetailScreen = ({ route, navigation }) => {
     );
   };
 
-  const handleRefreshDetails =async () => {
-  
-      try {
-        
-       
-        const latestPrinterInfo = await getuserprinter(printer.printerId);
-        navigation.navigate('PrinterDetailScreen',{ printer: latestPrinterInfo.printer })
-      } catch (error) {
-        console.error('Error fetching printer information:', error);
-      }
-    
-
-
+  const handleRefreshDetails = async () => {
+    setIsRefreshing(true); // Start refreshing
+    try {
+      const latestPrinterInfo = await getuserprinter(printer.printerId);
+      navigation.navigate('PrinterDetailScreen', { printer: latestPrinterInfo.printer });
+      Alert.alert('Success', 'Printer details refreshed successfully');
+    } catch (error) {
+      console.error('Error fetching printer information:', error);
+      Alert.alert('Error', 'Failed to refresh printer details');
+    } finally {
+      setIsRefreshing(false); // End refreshing
+    }
   };
 
 
@@ -108,6 +108,15 @@ const PrinterDetailScreen = ({ route, navigation }) => {
       </View>
       {/* Additional details */}
       <Button
+        icon={isRefreshing ? () => <ActivityIndicator size="small" color="#FFFFFF" /> : "refresh"}
+        mode="contained"
+        onPress={handleRefreshDetails}
+        disabled={isRefreshing}
+        style={styles.refreshButton}
+      >
+        {isRefreshing ? 'Refreshing...' : 'Refresh Details'}
+      </Button>
+      <Button
         icon="delete"
         mode="contained"
         onPress={handleDeletePrinter}
@@ -115,14 +124,7 @@ const PrinterDetailScreen = ({ route, navigation }) => {
       >
         Delete Printer
       </Button>
-      <Button
-        icon="refresh"
-        mode="contained"
-        onPress={handleRefreshDetails}
-        style={styles.refreshButton}
-      >
-        Refresh Details
-      </Button>
+      
     </View>
   );
 };
@@ -150,12 +152,25 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   deleteButton: {
-    marginTop: 20,
+    marginTop: 60, // Increased spacing from the Refresh Button
     backgroundColor: '#D32F2F',
+    marginVertical: 10,
+    borderRadius: 10,
+    paddingVertical: 5,
   },
   refreshButton: {
     marginTop: 20,
-    backgroundColor: '#6411ad',
+    backgroundColor: '#5D3FD3',
+    elevation: 4, // Only affects Android for shadow
+    shadowColor: '#000', // iOS shadow
+    shadowOffset: { width: 0, height: 2 }, // iOS shadow
+    shadowOpacity: 0.25, // iOS shadow
+    shadowRadius: 3.84, // iOS shadow
+    borderWidth: 1, // Optional: if you want a border
+    borderColor: '#FFFFFF', // Optional: border color
+    marginVertical: 10,
+    borderRadius: 10,
+    paddingVertical: 5,
   }
 });
 
