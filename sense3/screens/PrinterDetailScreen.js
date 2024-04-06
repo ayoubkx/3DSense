@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Alert } from 'react-native';
 import { Button } from 'react-native-paper';
 import { useAuth } from '../config/contexts/AuthContext';
 import { deletePrinter } from '../config/controllers/printer/deletePrinter';
+import { getuserprinter} from '../config/controllers/printer/getUserPrinter';
 
 const PrinterDetailScreen = ({ route, navigation }) => {
   const { user } = useAuth();
@@ -37,6 +38,22 @@ const PrinterDetailScreen = ({ route, navigation }) => {
       { cancelable: true } // This allows the alert to be dismissed by tapping outside of the alert dialog
     );
   };
+
+  const handleRefreshDetails =async () => {
+  
+      try {
+        
+       
+        const latestPrinterInfo = await getuserprinter(printer.printerId);
+        navigation.navigate('PrinterDetailScreen',{ printer: latestPrinterInfo.printer })
+      } catch (error) {
+        console.error('Error fetching printer information:', error);
+      }
+    
+
+
+  };
+
 
   const calculateRunningTime = () => {
     if (!printer.startTime) return 'N/A';
@@ -89,10 +106,6 @@ const PrinterDetailScreen = ({ route, navigation }) => {
       <Text style={styles.label}>Running Time:</Text>
         <Text style={styles.value}>{runningTimeDisplay}</Text>
       </View>
-      <View style={styles.row}>
-        <Text style={styles.label}>Uptime in Last 24hrs:</Text>
-        <Text style={styles.value}>{printer.uptime || 'N/A'}</Text>
-      </View>
       {/* Additional details */}
       <Button
         icon="delete"
@@ -101,6 +114,14 @@ const PrinterDetailScreen = ({ route, navigation }) => {
         style={styles.deleteButton}
       >
         Delete Printer
+      </Button>
+      <Button
+        icon="refresh"
+        mode="contained"
+        onPress={handleRefreshDetails}
+        style={styles.refreshButton}
+      >
+        Refresh Details
       </Button>
     </View>
   );
@@ -132,6 +153,10 @@ const styles = StyleSheet.create({
     marginTop: 20,
     backgroundColor: '#D32F2F',
   },
+  refreshButton: {
+    marginTop: 20,
+    backgroundColor: '#6411ad',
+  }
 });
 
 export default PrinterDetailScreen;

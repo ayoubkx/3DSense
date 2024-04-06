@@ -42,7 +42,7 @@ function App() {
           <Stack.Screen name="AddPrinterScreen" component={AddPrinterScreen} options={{ title: 'Add printer' }} />
         
           <Stack.Screen name="ViewClusterScreen" component={ViewClusterScreen} options={{ title: 'View Cluster' }} />
-          <Stack.Screen name="PrinterDetailScreen" component={PrinterDetailScreen} options={{ title: 'Status' }} />
+          <Stack.Screen name="PrinterDetailScreen" component={PrinterDetailScreen} options={{ title: 'Printer Details' }} />
         </Stack.Navigator>
       </NavigationContainer>
     </AuthProvider>
